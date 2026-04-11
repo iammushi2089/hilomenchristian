@@ -46,3 +46,17 @@ app.use('/uploads', express.static('uploads'));
 
 // Use upload routes
 app.use('/api', uploadRoutes);
+
+app.use(cors({ origin: [
+'http://localhost:3000',
+'https://thesports-2026-yawg.vercel.app/', // ← your Vercel URL (update after deployment)
+], credentials: true,
+}));
+// Or allow all origins during development/testing:
+// app.use(cors()); ← use this temporarily if you are unsure of your Vercel URL
+
+// backend/server.js — already correct if you followed Phase 2 const PORT = 
+process.env.PORT || 5000;
+app.listen(PORT, () => {
+console.log(`Server running on port ${PORT}`);
+});
