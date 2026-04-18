@@ -14,6 +14,7 @@ import EditPostPage from './pages/EditPostPage';
 import PostPage from './pages/PostPage';
 import SecurityQuestionPage from './pages/SecurityQuestionPage';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 
 // Protected Route wrapper component
 const ProtectedRoute = ({ children }) => {
@@ -45,6 +46,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/game" element={<GamePage />} />
         <Route path="/reset-password" element={<SecurityQuestionPage />} />
+        <Footer />
         
         {/* Protected Routes - require login */}
         <Route path="/profile" element={

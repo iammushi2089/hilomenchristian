@@ -16,7 +16,7 @@ const Footer = () => {
         </div>
         
         <div className="footer-bottom">
-          <p>© 2024 The Folio. All rights reserved.</p>
+          <p>© 2026 The Sports. All rights reserved.</p>
           <p>Share your thoughts, read stories, and join the community.</p>
         </div>
       </div>

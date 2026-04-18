@@ -1456,3 +1456,59 @@ body.dark-mode .back-button:hover {
     transform: scale(1);
   }
 }
+
+/* --- Navbar Un-Cramping Styles --- */
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px; /* Gives the navbar more breathing room */
+  margin: 0 auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.navbar__brand .brand-link {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between the ball and text */
+  text-decoration: none;
+  font-size: 1.5rem;
+  white-space: nowrap; /* Prevents "The Sports" from breaking into two lines */
+}
+
+.navbar__links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1; /* Pushes the links to the right */
+  gap: 30px; /* Creates more space between major sections */
+}
+
+.nav-main-links {
+  display: flex;
+  gap: 20px; /* Space between Home, About, etc. */
+}
+
+.nav-user-section {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* Space between profile, logout, and theme toggle */
+  border-left: 1px solid rgba(255, 255, 255, 0.2); /* Subtle divider */
+  padding-left: 20px;
+}
+
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Optional: Make the Sign Up button stand out to save space */
+.register-btn {
+  background-color: #1D546C;
+  padding: 8px 16px;
+  border-radius: 6px;
+  color: white !important;
+}
