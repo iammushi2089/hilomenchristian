@@ -35,48 +35,56 @@ const AdminRouteWrapper = ({ children }) => {
 function App() {
   return (
     <AuthProvider>
+      {/* Navbar sits above the routes */}
       <Navbar />
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/game" element={<GamePage />} />
-        <Route path="/reset-password" element={<SecurityQuestionPage />} />
-        <Footer />
-        
-        {/* Protected Routes - require login */}
-        <Route path="/profile" element={
-          <ProtectedRoute>
-            <ProfilePage />
-          </ProtectedRoute>
-        } />
-        <Route path="/create-post" element={
-          <ProtectedRoute>
-            <CreatePostPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/edit-post/:id" element={
-          <ProtectedRoute>
-            <EditPostPage />
-          </ProtectedRoute>
-        } />
-        <Route path="/posts/:id" element={
-          <ProtectedRoute>
-            <PostPage />
-          </ProtectedRoute>
-        } />
-        
-        {/* Admin Routes - require admin role */}
-        <Route path="/admin" element={
-          <AdminRouteWrapper>
-            <AdminPage />
-          </AdminRouteWrapper>
-        } />
-      </Routes>
+      
+      {/* The main content area where pages swap in and out */}
+      <div className="main-content" style={{ minHeight: '80vh' }}>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/game" element={<GamePage />} />
+          <Route path="/reset-password" element={<SecurityQuestionPage />} />
+          
+          {/* Protected Routes - require login */}
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
+          <Route path="/create-post" element={
+            <ProtectedRoute>
+              <CreatePostPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/edit-post/:id" element={
+            <ProtectedRoute>
+              <EditPostPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/posts/:id" element={
+            <ProtectedRoute>
+              <PostPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* Admin Routes - require admin role */}
+          <Route path="/admin" element={
+            <AdminRouteWrapper>
+              <AdminPage />
+            </AdminRouteWrapper>
+          } />
+        </Routes>
+      </div>
+
+      {/* ✅ FIX: Footer must sit OUTSIDE the Routes block! */}
+      <Footer />
+      
     </AuthProvider>
   );
 }
