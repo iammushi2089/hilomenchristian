@@ -5,7 +5,7 @@ import API from '../api/axios';
 
 const CreatePostPage = () => { 
   const [title, setTitle] = useState(''); 
-  const [body, setBody] = useState('');  // ✅ Changed from 'content' to 'body'
+  const [body, setBody] = useState('');  
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState(''); 
@@ -41,11 +41,21 @@ const CreatePostPage = () => {
     setIsUploading(true);
     const fd = new FormData();
     fd.append('title', title);
-    fd.append('body', body);  // ✅ Changed from 'content' to 'body'
+    fd.append('body', body);  
     if (image) fd.append('image', image);
     
     try {
-      const { data } = await API.post('/posts', fd);
+      // ✅ Explicitly grab the token
+      const token = localStorage.getItem('token');
+      
+      // ✅ Force the token and multipart header into the request
+      const { data } = await API.post('/posts', fd, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
       navigate(`/posts/${data._id}`);
     } catch (err) { 
       setError(err.response?.data?.message || 'Failed to publish post'); 

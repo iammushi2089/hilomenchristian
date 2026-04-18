@@ -1,5 +1,5 @@
 // backend/server.js
-require('dotenv').config();	// Load .env variables FIRST 
+require('dotenv').config();
 const express = require('express'); 
 const cors = require('cors'); 
 const path = require('path');
@@ -11,40 +11,31 @@ const postRoutes = require('./routes/post.routes');
 const commentRoutes = require('./routes/comment.routes');
 const adminRoutes = require('./routes/admin.routes');
 const contactRoutes = require('./routes/contact.routes');
-const uploadRoutes = require('./routes/upload');
 
 const app = express();
-
-// Connect to MongoDB
 connectDB();
 
-// ── Middleware ─────────────────────────────────────────────────
-// CORS - Allow React (port 3000) and Vercel to call this server
-app.use(cors({ 
-  origin: [
-    'http://localhost:3000',
-    // 'https://thesports-2026-yawg.vercel.app', // uncomment after deployment
-  ], 
-  credentials: true 
+// CORS - Ensures React can talk to Node
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
 }));
 
-// Parse incoming JSON request bodies 
 app.use(express.json());
-
-// Serve uploaded image files as public URLs
-// e.g. http://localhost:5000/uploads/my-image.jpg
+// Serves your images from the backend/uploads folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ── Routes ──────────────────────────────────────────────────── 
+// ── MOUNT ROUTES (Fixed paths to stop 404s) ── 
 app.use('/api/auth', authRoutes); 
 app.use('/api/posts', postRoutes); 
 app.use('/api/comments', commentRoutes); 
-app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminRoutes); 
 app.use('/api/contact', contactRoutes);
-app.use('/api', uploadRoutes);
 
-// ── Start Server ────────────────────────────────────────────── 
+// Main Health Check
+app.get('/', (req, res) => res.send('HilomenChristian API is Running...'));
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => { 
-  console.log(`Server is running on http://localhost:${PORT}`); 
+  console.log(`Server started on http://localhost:${PORT}`); 
 });

@@ -1,2 +1,2 @@
-'.env'  echo 
-'.env'  echo 
+node_modules/
+.env

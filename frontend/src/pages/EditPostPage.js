@@ -13,6 +13,10 @@ const EditPostPage = () => {
   const [error, setError] = useState('');
   const [post, setPost] = useState(null);
 
+  const getAuthHeaders = () => ({
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  });
+
   useEffect(() => {
     API.get(`/posts/${id}`)
       .then((res) => {
@@ -21,23 +25,19 @@ const EditPostPage = () => {
         setTitle(p.title);
         setBody(p.body);
         
-        // Check if user can edit this post
-        const isOwner = p.author._id === user?._id;
+        const isOwner = p.author?._id === user?._id;
         const isAdmin = user?.role === 'admin';
         if (!isOwner && !isAdmin) {
           setError('You are not authorized to edit this post');
-          return;
         }
       })
-      .catch((err) => setError(err.response?.data?.message || 'Failed to load post'));
+      .catch(() => setError('Failed to load post data'));
   }, [id, user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
     try {
-      await API.put(`/posts/${id}`, { title, body });
+      await API.put(`/posts/${id}`, { title, body }, getAuthHeaders());
       navigate(`/posts/${id}`);
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to update post');
@@ -45,19 +45,21 @@ const EditPostPage = () => {
   };
 
   return (
-    <div className="page-container">
-      <div className="edit-post-page">
+    <div className="page-container" style={{padding: '5rem 2rem', maxWidth: '800px', margin: '0 auto'}}>
+      <div style={{background: '#fff', padding: '2rem', borderRadius: '12px', boxShadow: '0 4px 10px rgba(0,0,0,0.1)'}}>
         <h2>Edit Post</h2>
-        {error && <p className="error-msg">{error}</p>}
+        {error && <p style={{color: 'red', background: '#f8d7da', padding: '10px'}}>{error}</p>}
         {!error && post && (
-        <form onSubmit={handleSubmit} className="contact-form">
-          <div className="form-group">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" required />
-          </div>
-          <div className="form-group">
-            <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Body" rows={10} required />
-          </div>
-          <button type="submit" className="btn">Update</button>
+          <form onSubmit={handleSubmit}>
+            <div style={{marginBottom: '1rem'}}>
+              <label style={{display: 'block', fontWeight: 'bold'}}>Title</label>
+              <input value={title} onChange={(e) => setTitle(e.target.value)} style={{width: '100%', padding: '10px'}} required />
+            </div>
+            <div style={{marginBottom: '1rem'}}>
+              <label style={{display: 'block', fontWeight: 'bold'}}>Content</label>
+              <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={10} style={{width: '100%', padding: '10px'}} required />
+            </div>
+            <button type="submit" style={{padding: '10px 20px', backgroundColor: '#1D546C', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>Update Post</button>
           </form>
         )}
       </div>
