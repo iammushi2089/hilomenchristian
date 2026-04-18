@@ -19,7 +19,8 @@ connectDB();
 app.use(cors({
   origin: [
     'http://localhost:3000', // Keeps local testing working
-    'https://hilomenchristian.vercel.app' // Your live Vercel frontend
+    'https://hilomenchristian.vercel.app', // Your live Vercel frontend
+    'https://thesports-hub.vercel.app'
   ],
   credentials: true
 }));
