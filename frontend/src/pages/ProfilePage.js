@@ -142,7 +142,7 @@ const ProfilePage = () => {
     }
   };
 
-  const picSrc = user?.profilePic ? `http://localhost:5000/uploads/${user.profilePic}` : '/default-avatar.svg';
+  const picSrc = user?.profilePic ? `https://hilomenchristian-backend.onrender.com/uploads/${user.profilePic}` : '/default-avatar.svg';
 
   const styles = {
     container: { width: '90%', maxWidth: '1200px', margin: '0 auto', padding: '20px', color: '#f3f4f6' },

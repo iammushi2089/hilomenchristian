@@ -228,7 +228,7 @@ const PostPage = () => {
           <div className="post-header">
             <div className="post-avatar">
               {post.author?.profilePic ? (
-                <img src={`http://localhost:5000/uploads/${post.author.profilePic}`} alt={post.author.name} className="profile-pic-preview" />
+                <img src={`https://hilomenchristian-backend.onrender.com/uploads/${post.author.profilePic}`} alt={post.author.name} className="profile-pic-preview" />
               ) : (
                 post.author?.name?.charAt(0).toUpperCase() || 'U'
               )}
@@ -247,7 +247,7 @@ const PostPage = () => {
           </div>
 
           {post.image && (
-            <img className="post-image" src={`http://localhost:5000/uploads/${post.image}`} alt={post.title} style={{ maxWidth: '100%', borderRadius: '8px', margin: '1rem 0' }} />
+            <img className="post-image" src={`https://hilomenchristian-backend.onrender.com/uploads/${post.image}`} alt={post.title} style={{ maxWidth: '100%', borderRadius: '8px', margin: '1rem 0' }} />
           )}
           <div className="post-body">{post.body}</div>
 
@@ -288,7 +288,7 @@ const PostPage = () => {
                 <div key={comment._id} className="comment-item">
                   <div className="comment-avatar">
                     {comment.author?.profilePic ? (
-                      <img src={`http://localhost:5000/uploads/${comment.author.profilePic}`} alt={comment.author.name} className="profile-pic-preview" />
+                      <img src={`https://hilomenchristian-backend.onrender.com/uploads/${comment.author.profilePic}`} alt={comment.author.name} className="profile-pic-preview" />
                     ) : (
                       comment.author?.name?.charAt(0).toUpperCase() || 'U'
                     )}
