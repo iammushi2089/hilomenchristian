@@ -15,9 +15,12 @@ const contactRoutes = require('./routes/contact.routes');
 const app = express();
 connectDB();
 
-// CORS - Ensures React can talk to Node
+// ── FIXED CORS CONFIGURATION ──
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000', // Keeps local testing working
+    'https://hilomenchristian.vercel.app' // Your live Vercel frontend
+  ],
   credentials: true
 }));
 
