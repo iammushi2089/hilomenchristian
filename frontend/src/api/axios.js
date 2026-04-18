@@ -2,7 +2,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // Match this to your server port
+  // Replace this with your actual Render URL, keep the /api at the end!
+  baseURL: 'https://hilomenchristian-backend.onrender.com', 
 });
 
 // This automatically attaches your "VIP Pass" (token) to every request
