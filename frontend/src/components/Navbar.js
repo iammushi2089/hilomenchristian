@@ -72,7 +72,8 @@ const Navbar = () => {
               )}
               <Link to="/profile" className={`navbar__user ${isActive('/profile') ? 'active' : ''}`}>
                 <img 
-                  src={user.profilePic ? `http://localhost:5000/uploads/${user.profilePic}` : '/default-avatar.svg'} 
+                  // ✅ FIX: Updated to the live Render URL
+                  src={user.profilePic ? `https://hilomenchristian-backend.onrender.com/uploads/${user.profilePic}` : '/default-avatar.svg'} 
                   alt={user.name} 
                   className="navbar__user-pic"
                 />
