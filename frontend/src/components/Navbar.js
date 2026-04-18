@@ -9,7 +9,6 @@ const Navbar = () => {
   const location = useLocation();
   const [isDarkMode, setIsDarkMode] = useState(false);
 
-  // Check for saved theme preference
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
@@ -52,6 +51,12 @@ const Navbar = () => {
           <Link to="/about" className={isActive('/about') ? 'active' : ''}>
             About Sports
           </Link>
+          
+          {/* ✅ MOVED HERE: Always visible to everyone */}
+          <Link to="/contact" className={isActive('/contact') ? 'active' : ''}>
+            Contact & Resources
+          </Link>
+
           {user ? (
             <>
               <Link to="/create-post" className={isActive('/create-post') ? 'active' : ''}>
@@ -60,11 +65,6 @@ const Navbar = () => {
               <Link to="/game" className={isActive('/game') ? 'active' : ''}>
                 <span className="game-icon">Game</span> 
               </Link>
-              {user.role !== 'admin' && (
-                <Link to="/contact" className={isActive('/contact') ? 'active' : ''}>
-                  Contact & Resources
-                </Link>
-              )}
               {user.role === 'admin' && (
                 <Link to="/admin" className={isActive('/admin') ? 'active' : ''}>
                   Admin
@@ -93,7 +93,6 @@ const Navbar = () => {
             </>
           )}
           
-          {/* Theme Toggle Switch */}
           <label className="theme-switch">
             <input 
               type="checkbox" 
