@@ -1,10 +1,13 @@
 // frontend/src/pages/ContactPage.js
 import { useState } from 'react';
 import API from '../api/axios';
-import { useAuth } from '../context/AuthContext';
+// Remove useAuth import since we don't need user anymore
+// import { useAuth } from '../context/AuthContext';
 
 const ContactPage = () => {
-  const { user } = useAuth();
+  // Remove the user destructuring
+  // const { user } = useAuth();
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -67,11 +70,12 @@ const ContactPage = () => {
     setStatus('');
     
     try {
+      // Send to backend - works for both guests and logged-in users
       await API.post('/contact', { 
         name: formData.name,
         email: formData.email,
         subject: formData.subject, 
-        message: formData.message 
+        message: formData.message
       });
       setStatus('Message sent successfully!');
       setSubmitted(true);
@@ -85,41 +89,6 @@ const ContactPage = () => {
     }
   };
 
-  if (!user) {
-    return (
-      <main className="container">
-        <section className="hero fade-in" style={{
-          background: "linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/assets/CreamlineCoolSmashers.jpg') center/cover no-repeat",
-          borderRadius: '0 0 15px 15px',
-        }}>
-          <h1>Contact & Resources</h1>
-          <p>Get in touch and explore valuable sports resources</p>
-        </section>
-        <div style={{ textAlign: 'center', padding: '3rem' }}>
-          <p>Please log in to contact us.</p>
-        </div>
-      </main>
-    );
-  }
-
-  // Prevent admins from accessing contact page
-  if (user.role === 'admin') {
-    return (
-      <main className="container">
-        <section className="hero fade-in" style={{
-          background: "linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/assets/CreamlineCoolSmashers.jpg') center/cover no-repeat",
-          borderRadius: '0 0 15px 15px',
-        }}>
-          <h1>Contact & Resources</h1>
-          <p>Get in touch and explore valuable sports resources</p>
-        </section>
-        <div style={{ textAlign: 'center', padding: '3rem' }}>
-          <p>As an admin, you cannot send contact messages.</p>
-        </div>
-      </main>
-    );
-  }
-
   return (
     <main className="container">
       {/* Hero Section */}
@@ -131,7 +100,7 @@ const ContactPage = () => {
         <p>Get in touch and explore valuable sports resources</p>
       </section>
 
-      {/* Contact Form */}
+      {/* Contact Form - Always visible */}
       <section>
         <h2>Contact Form</h2>
         <p>Have questions about sports, specifically volleyball? Want to share your experiences? Send me a message!</p>

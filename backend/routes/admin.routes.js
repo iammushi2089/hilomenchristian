@@ -119,14 +119,23 @@ router.delete('/posts/:id', async (req, res) => {
   }
 });
 
-// GET /api/admin/contacts — List all contact messages (admin only)
+// Update the GET /api/admin/contacts route to handle guest messages
 router.get('/contacts', async (req, res) => {
   try {
     const contacts = await Contact.find()
       .populate('sender', 'name email')
       .populate('adminReply.repliedBy', 'name')
       .sort({ createdAt: -1 });
-    res.json(contacts);
+    
+    // Format response to show guest info
+    const formattedContacts = contacts.map(contact => ({
+      ...contact.toObject(),
+      senderName: contact.isGuest ? contact.guestName : contact.sender?.name,
+      senderEmail: contact.isGuest ? contact.guestEmail : contact.sender?.email,
+      isGuest: contact.isGuest
+    }));
+    
+    res.json(formattedContacts);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

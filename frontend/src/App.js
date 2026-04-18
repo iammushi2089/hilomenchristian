@@ -1,50 +1,83 @@
 // frontend/src/App.js
-import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import ProtectedRoute from './components/ProtectedRoute'; 
-import SplashPage from './pages/SplashPage'; 
-import HomePage from './pages/HomePage'; 
-import AboutPage from './pages/AboutPage'; 
-import PostPage from './pages/PostPage'; 
-import LoginPage from './pages/LoginPage'; 
-import RegisterPage from './pages/RegisterPage'; 
-import ProfilePage from './pages/ProfilePage'; 
-import CreatePostPage from './pages/CreatePostPage'; 
-import EditPostPage from './pages/EditPostPage'; 
-import AdminPage from './pages/AdminPage'; 
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import GamePage from './pages/GamePage';
+import AdminPage from './pages/AdminPage';
+import ProfilePage from './pages/ProfilePage';
+import CreatePostPage from './pages/CreatePostPage';
+import EditPostPage from './pages/EditPostPage';
+import PostPage from './pages/PostPage';
 import SecurityQuestionPage from './pages/SecurityQuestionPage';
+import Navbar from './components/Navbar';
 
-function App() { 
+// Protected Route wrapper component
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) return <div>Loading...</div>;
+  return user ? children : <Navigate to="/login" />;
+};
+
+// Admin Route wrapper component
+const AdminRouteWrapper = ({ children }) => {
+  const { user, loading } = useAuth();
+  
+  if (loading) return <div>Loading...</div>;
+  return user && user.role === 'admin' ? children : <Navigate to="/home" />;
+};
+
+function App() {
   return (
-    <>
-      <Navbar />
-      <div className="main-content">
+    <Router>
+      <AuthProvider>
+        <Navbar />
         <Routes>
-          {/* Public routes — anyone can visit */}
-          <Route path='/' element={<SplashPage />} />
-          <Route path='/home' element={<HomePage />} />
-          <Route path='/posts/:id' element={<PostPage />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/register' element={<RegisterPage />} />
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
           <Route path="/game" element={<GamePage />} />
           <Route path="/reset-password" element={<SecurityQuestionPage />} />
           
-          {/* Protected routes — must be logged in */}
-          <Route path='/profile' element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-          <Route path='/create-post' element={<ProtectedRoute><CreatePostPage /></ProtectedRoute>} />
-          <Route path='/edit-post/:id' element={<ProtectedRoute><EditPostPage /></ProtectedRoute>} />
-          <Route path='/contact' element={<ProtectedRoute><ContactPage /></ProtectedRoute>} />
-
-          {/* Admin only — redirects members/guests to home */}
-          <Route path='/admin' element={<ProtectedRoute role='admin'><AdminPage /></ProtectedRoute>} />
+          {/* Protected Routes - require login */}
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
+          <Route path="/create-post" element={
+            <ProtectedRoute>
+              <CreatePostPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/edit-post/:id" element={
+            <ProtectedRoute>
+              <EditPostPage />
+            </ProtectedRoute>
+          } />
+          <Route path="/posts/:id" element={
+            <ProtectedRoute>
+              <PostPage />
+            </ProtectedRoute>
+          } />
+          
+          {/* Admin Routes - require admin role */}
+          <Route path="/admin" element={
+            <AdminRouteWrapper>
+              <AdminPage />
+            </AdminRouteWrapper>
+          } />
         </Routes>
-      </div>
-      <Footer />
-    </>
+      </AuthProvider>
+    </Router>
   );
 }
 
