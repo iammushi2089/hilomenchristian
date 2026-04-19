@@ -36,7 +36,6 @@ const AdminPage = () => {
       setPosts(p.data); 
       setContacts(c.data);
     } catch (err) {
-      // ✅ FIX: Show the ACTUAL error from the server, not just "Access Denied"
       const errorMsg = err.response?.data?.message || err.message || 'Unknown Server Error';
       showMessage(`Admin Error: ${errorMsg}`, 'error');
       console.error("Admin Fetch Error Details:", err.response);
@@ -55,7 +54,6 @@ const AdminPage = () => {
     } catch (err) { showMessage('Update failed', 'error'); }
   };
 
-  // ✅ RESTORED: editUser function
   const editUser = (user) => {
     setEditingUser(user);
     setEditForm({ 
@@ -89,7 +87,6 @@ const AdminPage = () => {
     } catch (err) { showMessage('Delete failed', 'error'); }
   };
 
-  // ✅ RESTORED: handleReplyToContact function
   const handleReplyToContact = (contact) => {
     setReplyingToContact(contact);
     setReplyMessage(contact.adminReply?.body || '');
@@ -196,7 +193,11 @@ const AdminPage = () => {
 
             {tab === 'contacts' && contacts.map(c => (
               <tr key={c._id} style={styles.tr}>
-                <td style={{...styles.td, borderRadius: '10px 0 0 10px'}}>{c.sender?.name || 'Guest'}</td>
+                {/* ✅ FIX: Now utilizing the backend's explicitly processed senderName */}
+                <td style={{...styles.td, borderRadius: '10px 0 0 10px'}}>
+                  <div style={{fontWeight: 'bold', color: c.isGuest ? '#cbd5e1' : '#38bdf8'}}>{c.senderName}</div>
+                  {c.isGuest && <div style={{fontSize: '0.7rem', color: '#64748b'}}>Guest User</div>}
+                </td>
                 <td style={styles.td}>
                    <div>{c.subject}</div>
                    <span style={{...styles.badge, background: c.status === 'replied' ? '#1e3a8a' : '#78350f', color: '#fff'}}>
@@ -235,7 +236,7 @@ const AdminPage = () => {
           <div style={styles.modalContent}>
             <h3 style={{marginTop: 0, color: '#38bdf8'}}>Support Response</h3>
             <div style={{background: '#0f172a', padding: '15px', borderRadius: '10px', marginBottom: '20px', fontSize: '0.9rem', color: '#94a3b8', border: '1px solid #334155'}}>
-               <strong style={{color: '#fff'}}>User Message:</strong> <br/>
+               <strong style={{color: '#fff'}}>Message from {replyingToContact.senderName}:</strong> <br/>
                "{replyingToContact.message}"
             </div>
             <textarea 

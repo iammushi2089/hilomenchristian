@@ -40,7 +40,7 @@ router.put('/contacts/:id/mark-read', protect, async (req, res) => {
     }
     
     // Check if user owns this contact message
-    if (contact.sender.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
+    if (contact.sender && contact.sender.toString() !== req.user._id.toString() && req.user.role !== 'admin') {
       return res.status(403).json({ message: 'Not authorized' });
     }
     
@@ -127,13 +127,19 @@ router.get('/contacts', async (req, res) => {
       .populate('adminReply.repliedBy', 'name')
       .sort({ createdAt: -1 });
     
-    // Format response to show guest info
-    const formattedContacts = contacts.map(contact => ({
-      ...contact.toObject(),
-      senderName: contact.isGuest ? contact.guestName : contact.sender?.name,
-      senderEmail: contact.isGuest ? contact.guestEmail : contact.sender?.email,
-      isGuest: contact.isGuest
-    }));
+    // ✅ FIX: Determine strictly if this is a registered user or a guest
+    const formattedContacts = contacts.map(contact => {
+      // It is a registered user ONLY if 'sender' is fully populated with an ID
+      const isRegistered = contact.sender && contact.sender._id;
+
+      return {
+        ...contact.toObject(),
+        // If registered, use their DB name. If not, use their guest form name (or default 'Guest')
+        senderName: isRegistered ? contact.sender.name : (contact.guestName || 'Guest'),
+        senderEmail: isRegistered ? contact.sender.email : (contact.guestEmail || 'Unknown'),
+        isGuest: !isRegistered
+      };
+    });
     
     res.json(formattedContacts);
   } catch (err) {
