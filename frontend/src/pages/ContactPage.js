@@ -1,17 +1,31 @@
 // frontend/src/pages/ContactPage.js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import API from '../api/axios';
+import { useAuth } from '../context/AuthContext'; // ✅ Added Auth Context
 
 const ContactPage = () => {
+  const { user } = useAuth(); // ✅ Get the current user
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     subject: '',
     message: ''
   });
+  
   const [errors, setErrors] = useState({});
-  // Removed the unused 'submitted' state entirely
   const [status, setStatus] = useState('');
+
+  // ✅ Auto-fill the form if the user is logged in
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || '',
+        email: user.email || ''
+      }));
+    }
+  }, [user]);
 
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,10 +39,7 @@ const ContactPage = () => {
       [name]: value
     }));
     if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
@@ -53,14 +64,28 @@ const ContactPage = () => {
     setStatus('');
     
     try {
+      // ✅ Grab the token if it exists
+      const token = localStorage.getItem('token');
+      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+
+      // ✅ Send the token along with the request
       await API.post('/contact', { 
         name: formData.name,
         email: formData.email,
         subject: formData.subject, 
         message: formData.message
-      });
+      }, config);
+      
       setStatus('Message sent successfully!');
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      
+      // ✅ Reset form, but keep name/email if user is logged in
+      setFormData({ 
+        name: user ? user.name : '', 
+        email: user ? user.email : '', 
+        subject: '', 
+        message: '' 
+      });
+      
       setTimeout(() => {
         setStatus('');
       }, 3000);
@@ -93,12 +118,12 @@ const ContactPage = () => {
           <div className="form-row">
             <div className="form-group">
               <label htmlFor="name">Full Name: *</label>
-              <input type="text" id="name" name="name" className={`form-control ${errors.name ? 'error-border' : ''}`} value={formData.name} onChange={handleChange} />
+              <input type="text" id="name" name="name" className={`form-control ${errors.name ? 'error-border' : ''}`} value={formData.name} onChange={handleChange} readOnly={!!user} style={user ? {backgroundColor: '#f1f5f9', cursor: 'not-allowed'} : {}} />
               <span id="nameError" className="error">{errors.name}</span>
             </div>
             <div className="form-group">
               <label htmlFor="email">Email Address: *</label>
-              <input type="email" id="email" name="email" className={`form-control ${errors.email ? 'error-border' : ''}`} placeholder="example@email.com" value={formData.email} onChange={handleChange} />
+              <input type="email" id="email" name="email" className={`form-control ${errors.email ? 'error-border' : ''}`} placeholder="example@email.com" value={formData.email} onChange={handleChange} readOnly={!!user} style={user ? {backgroundColor: '#f1f5f9', cursor: 'not-allowed'} : {}} />
               <span id="emailError" className="error">{errors.email}</span>
             </div>
           </div>

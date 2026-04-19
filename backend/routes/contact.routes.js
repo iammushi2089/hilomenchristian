@@ -2,9 +2,9 @@
 const express = require('express');
 const router = express.Router();
 const Contact = require('../models/Contact');
+const jwt = require('jsonwebtoken'); // ✅ We need this to decode the token
 
 // ── POST /api/contact ──
-// NOTE: We REMOVED 'protect' from here so guests can use it!
 router.post('/', async (req, res) => {
     try {
         const { name, email, subject, message } = req.body;
@@ -13,9 +13,21 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ message: 'Please fill in all fields.' });
         }
 
+        // ✅ Check for optional authentication token
+        let senderId = null;
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            try {
+                const token = req.headers.authorization.split(' ')[1];
+                const decoded = jwt.verify(token, process.env.JWT_SECRET);
+                senderId = decoded.id; // Extract the user ID from the valid token
+            } catch (tokenError) {
+                // If token is expired or invalid, we just ignore it and treat them as a guest
+                console.log("Invalid token on contact form, proceeding as guest.");
+            }
+        }
+
         const newContact = new Contact({
-            // If user is logged in, we can save their ID, otherwise it's null (Guest)
-            sender: req.user ? req.user._id : null, 
+            sender: senderId, // ✅ Will be an ID if logged in, null if guest
             guestName: name,
             guestEmail: email,
             subject,
